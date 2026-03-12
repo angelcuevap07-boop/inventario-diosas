@@ -1,6 +1,27 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
+
+st.set_page_config(page_title="Inventario Guizado", layout="wide")
+
+# Verificación de Secrets rápida
+if "connections" not in st.secrets:
+    st.error("❌ Faltan los Secrets. Ve a Settings > Secrets y pega la configuración del Excel.")
+    st.stop()
+
+try:
+    conn = st.connection("gsheets", type=GSheetsConnection)
+    df = conn.read(spreadsheet=st.secrets["connections"]["gsheets"]["spreadsheet"], ttl=0)
+    st.success("✅ ¡Conexión exitosa! Ya puedes entrar.")
+except Exception as e:
+    st.error(f"❌ Error al conectar con Google Sheets: {e}")
+    st.info("Revisa que el enlace en Secrets sea correcto y que el Excel sea público (Cualquier persona con el enlace puede leer).")
+    st.stop()
+
+# (Aquí seguiría el resto del código de Login...)
+import streamlit as st
+from streamlit_gsheets import GSheetsConnection
+import pandas as pd
 import re
 
 # 1. CONFIGURACIÓN
